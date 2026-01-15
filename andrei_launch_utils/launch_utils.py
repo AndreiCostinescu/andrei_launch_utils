@@ -4,6 +4,10 @@ from launch import LaunchContext
 from launch.actions import DeclareLaunchArgument, TimerAction
 from launch.substitutions import LaunchConfiguration, PythonExpression
 
+import os
+import xml.etree.ElementTree as ET
+from pathlib import Path
+
 
 def create_arg_get_value(
     arg_name: str,
@@ -120,3 +124,26 @@ def launch_value_if(condition, if_true, if_false, cast_to_string: bool = True):
     if cast_to_string:
         condition_expr.append('"')
     return PythonExpression(condition_expr)
+
+
+def get_current_package_name(launch_file_path):
+    """Dynamically determine the package name from the launch file location."""
+    current_dir = Path(launch_file_path).parent
+
+    # Method 1: Look for package.xml in parent directories
+    for parent in [current_dir] + list(current_dir.parents):
+        package_xml = parent / 'package.xml'
+        if package_xml.exists():
+            tree = ET.parse(package_xml)
+            return tree.getroot().find('name').text
+
+    # Method 2: If installed, extract from path (.../share/<package_name>/...)
+    path_str = str(current_dir)
+    if 'share' in path_str:
+        parts = path_str.split(os.sep)
+        if 'share' in parts:
+            share_idx = parts.index('share')
+            if share_idx + 1 < len(parts):
+                return parts[share_idx + 1]
+
+    raise RuntimeError("Could not determine the name of the current package")
