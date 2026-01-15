@@ -143,17 +143,17 @@ def get_current_package_name(launch_file_path):
 
     # Method 1: Look for package.xml in parent directories
     for parent in [current_dir] + list(current_dir.parents):
-        package_xml = parent / 'package.xml'
+        package_xml = parent / "package.xml"
         if package_xml.exists():
             tree = ET.parse(package_xml)
-            return tree.getroot().find('name').text
+            return tree.getroot().find("name").text
 
     # Method 2: If installed, extract from path (.../share/<package_name>/...)
     path_str = str(current_dir)
-    if 'share' in path_str:
+    if "share" in path_str:
         parts = path_str.split(os.sep)
-        if 'share' in parts:
-            share_idx = parts.index('share')
+        if "share" in parts:
+            share_idx = parts.index("share")
             if share_idx + 1 < len(parts):
                 return parts[share_idx + 1]
 
