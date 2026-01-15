@@ -9,6 +9,17 @@ import xml.etree.ElementTree as ET
 from pathlib import Path
 
 
+def bool_to_ros_str(b: bool):
+    """
+    Convert boolean to "true" or "false".
+
+    Convert a boolean to a string that is acceptable as a ros launch parameter.
+    :param b: the boolean to pass to the launch file
+    :return:
+    """
+    return str(b).lower()
+
+
 def create_arg_get_value(
     arg_name: str,
     description: str,
