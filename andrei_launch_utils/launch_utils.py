@@ -1,12 +1,12 @@
 """Script contains launch-file-related utility python functions."""
 
-from launch import LaunchContext
-from launch.actions import DeclareLaunchArgument, TimerAction
-from launch.substitutions import LaunchConfiguration, PythonExpression
-
 import os
 import xml.etree.ElementTree as ET
 from pathlib import Path
+
+from launch import LaunchContext
+from launch.actions import DeclareLaunchArgument, TimerAction
+from launch.substitutions import LaunchConfiguration, PythonExpression
 
 
 def bool_to_ros_str(b: bool):
@@ -142,7 +142,7 @@ def get_current_package_name(launch_file_path):
     current_dir = Path(launch_file_path).parent
 
     # Method 1: Look for package.xml in parent directories
-    for parent in [current_dir] + list(current_dir.parents):
+    for parent in [current_dir, *list(current_dir.parents)]:
         package_xml = parent / "package.xml"
         if package_xml.exists():
             tree = ET.parse(package_xml)
